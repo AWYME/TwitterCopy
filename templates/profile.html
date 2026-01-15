@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="nav-links">
+        <a href="{{url_for('post')}}" class="nav-link">Форум</a>
+        {% if session.get('id') %}
+            <a href="{{ url_for('logOut') }}" class="nav-link">Выйти ({{ session.get('email') }})</a>
+        {% else %}
+            <a href="{{ url_for('logIn') }}" class="nav-link">Войти</a>
+        {% endif %}
+    </div>
+    <div>
+        <h1>Профиль</h1>
+        <p>ID: {{id}}</p>
+        <p>Email: {{email}}</p>
+        {% if session.get('id') %}
+            <a href="{{url_for('chat', email=email)}}">Написать</a>
+        {%endif%}
+    </div>
+</body>
+</html>

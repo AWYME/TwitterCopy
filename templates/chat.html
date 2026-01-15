@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чаты</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="{{ url_for('post') }}" class="nav-link">Форум</a>
+                <a href="{{ url_for('chatList') }}" class="nav-link">Чаты</a>
+                {% if session.get('id') %}
+                    <a href="{{ url_for('logOut') }}" class="nav-link">Выйти ({{ session.get('email') }})</a>
+                {% else %}
+                    <a href="{{ url_for('logIn') }}" class="nav-link">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="chats-container">
+        {% if session.get('id') %}
+            <!-- Основная область чата -->
+            <div class="chat-main-full">
+                <!-- Заголовок чата -->
+                <div class="chat-header">
+                    <div class="chat-partner">
+                        <div class="partner-avatar">{{ partnerEmail[0]|upper if partnerEmail else '?' }}</div>
+                        <div class="partner-info">
+                            <div class="partner-name">{{ partnerEmail if partnerEmail else 'Выберите собеседника' }}</div>
+                            <div class="partner-status">
+                                {% if partnerEmail %}
+                                    {{ 'в сети' if partner_online else 'был(а) недавно' }}
+                                {% else %}
+                                    выберите чат для общения
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Область сообщений -->
+                <div class="chat-messages">
+                    {% for message in messages %}
+                        {% if message.sender_id == session.get('id') %}
+                            <!-- Сообщение отправителя -->
+                            <div class="message sent">
+                                <div class="message-content">
+                                    <div class="message-text">{{ message.text }}</div>
+                                    <div class="message-meta">
+                                        <span class="message-time">{{ message.datetime }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Сообщение получателя -->
+                            <div class="message received">
+                                <div class="message-avatar">{{ partnerEmail[0]|upper if partnerEmail else '?' }}</div>
+                                <div class="message-content">
+                                    <div class="message-text">{{ message.text }}</div>
+                                    <div class="message-meta">
+                                        <span class="message-time">{{ message.datetime }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <!-- Если нет сообщений -->
+                        <div class="no-messages">
+                            {% if partnerEmail %}
+                                <p>Начните общение с {{ partnerEmail }}</p>
+                            {% else %}
+                                <p>Выберите собеседника для начала общения</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Поле ввода сообщений -->
+                <div class="chat-input">
+                    <form method="POST" action="{{ url_for('send_message', partner_id=partner_id) if partner_id else '#' }}">
+                        <div class="input-container">
+                            <input type="text" 
+                                   name="message" 
+                                   placeholder="Введите сообщение..." 
+                                   class="message-input"
+                                   {% if not partnerEmail %}disabled{% endif %}>
+                            <button class="send-btn" 
+                                    type="submit"
+                                    {% if not partnerEmail %}disabled{% endif %}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="currentColor"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <!-- Сообщение для неавторизованных пользователей -->
+            <div class="auth-required">
+                <h2>Доступ к чатам</h2>
+                <p>Для доступа к чатам необходимо войти в систему</p>
+                <a href="{{ url_for('logIn') }}" class="login-btn-chat">Войти в аккаунт</a>
+            </div>
+        {% endif %}
+    </main>
+</body>
+</html>

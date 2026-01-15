@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Блог - Тестовая страница</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="{{url_for('chatList')}}" class="nav-link">Чаты</a>
+                {% if session.get('id') %}
+                    <a href="{{url_for('logOut')}}" class="nav-link">Выйти</a>
+                    <p class="nav-link">{{ session.get('email') }}</p>
+                {% else %}
+                    <a href="{{url_for('logIn')}}" class="nav-link">Войти</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="auth-for">
+            <h2 class="form-title">Добавить новый пост</h2>
+            <form id="form-post" method="post" enctype="multipart/form-data">
+                <textarea name="text" id="" placeholder="Сообщение" class="auth-elements"></textarea>
+                <div>
+                    <input type="submit" class="auth-elements">
+                    <input type="file" name="file" class="auth-elements">
+                </div>
+            </form>
+            <p class="form-error">{{error}}</p>
+        </div>
+    </main>
+
+    <main class="container">
+        {%for p in posts%}
+            <div class="post">
+                <div class="post-meta">
+                    <a href="{{url_for('profile', email=p.client_email)}}"><span class="post-author">{{p.client_email}}</span></a>
+                    <span class="post-date">{{p.datetime}}</span>
+                </div>
+                <div class="post-content">
+                    <p>{{p.text}}</p>
+                </div>
+                <img src="{{ url_for('get_file', filename=p.filename) }}" alt="">
+            </div>
+        {%endfor%}
+<!--
+        <div class="post">
+            <h2 class="post-title">Другой пример поста</h2>
+            <div class="post-meta">
+                <span class="post-author">Автор: Другой пользователь</span>
+                <span class="post-date">Опубликовано: 19 ноября 2023</span>
+            </div>
+            <div class="post-content">
+                <p>Ещё один пример поста с другим содержимым. Этот контейнер можно копировать и заполнять своим контентом для тестов.</p>
+            </div>
+        </div>-->
+    </main>
+</body>
+</html>
