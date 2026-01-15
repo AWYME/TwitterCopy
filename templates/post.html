@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Блог - Тестовая страница</title>
+    <title>Форум - Тестовая страница</title>
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body>
@@ -27,8 +27,8 @@
             <form id="form-post" method="post" enctype="multipart/form-data">
                 <textarea name="text" id="" placeholder="Сообщение" class="auth-elements"></textarea>
                 <div>
-                    <input type="submit" class="auth-elements">
                     <input type="file" name="file" class="auth-elements">
+                    <input type="submit" class="auth-elements">
                 </div>
             </form>
             <p class="form-error">{{error}}</p>

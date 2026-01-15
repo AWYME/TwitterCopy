@@ -31,13 +31,6 @@
                         <div class="partner-avatar">{{ partnerEmail[0]|upper if partnerEmail else '?' }}</div>
                         <div class="partner-info">
                             <div class="partner-name">{{ partnerEmail if partnerEmail else 'Выберите собеседника' }}</div>
-                            <div class="partner-status">
-                                {% if partnerEmail %}
-                                    {{ 'в сети' if partner_online else 'был(а) недавно' }}
-                                {% else %}
-                                    выберите чат для общения
-                                {% endif %}
-                            </div>
                         </div>
                     </div>
                 </div>

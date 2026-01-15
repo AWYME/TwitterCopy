@@ -448,18 +448,6 @@ body {
     margin-bottom: 0.25rem;
 }
 
-.partner-status {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-}
-
-.partner-status::before {
-    content: '●';
-    color: var(--lime-accent);
-    margin-right: 0.5rem;
-    font-size: 0.8rem;
-}
-
 /* Область сообщений (прокручиваемая) */
 .chat-messages {
     flex: 1;
@@ -836,4 +824,29 @@ body {
 
 .chats-list::-webkit-scrollbar-thumb:hover {
     background: var(--light-green);
+}
+
+.auth-elements{
+    background-color: var(--card-bg);
+    width: 90%;
+    height: 4rem;
+    margin: 5px;
+    color: var(--text-primary);
+    border: var(--gradient-primary);
+    border-radius: 7px;
+    border-width: 1px;
+    font-size: medium;
+}
+
+.auth-for{
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin: 2rem auto;
+    max-width: 900px;
+    height: 450px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    box-shadow: var(--shadow-medium);
+    position: relative;
+    overflow: hidden;
 }

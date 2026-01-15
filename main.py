@@ -103,4 +103,8 @@ def chatList():
         elif chats[i]["second_client_id"] == client_id:
             chats[i].update({"chat_with": getUserById(chats[i]["first_client_id"])["email"]})
     return render_template('chatList.html',chats=chats)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 app.run(host='0.0.0.0', port=81)
