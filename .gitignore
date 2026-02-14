@@ -1,4 +1,5 @@
 uploads
 db/database.db
 testDb.py
-base.html
+db/__pycache__/
+__pycache__/

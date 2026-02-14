@@ -1,24 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Чаты</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-links">
-                <a href="{{url_for('post')}}" class="nav-link">Форум</a>
-                {% if session.get('id') %}
-                    <a href="{{ url_for('logOut') }}" class="nav-link">Выйти ({{ session.get('email') }})</a>
-                {% else %}
-                    <a href="{{ url_for('logIn') }}" class="nav-link">Войти</a>
-                {% endif %}
-            </div>
-        </div>
-    </nav>
+{% extends "base.html" %}
+
+{% block title %} Чаты {% endblock %}
+
+{% block content %}
     <main class="container">
         {% if session.get('id') %} 
             {% for chat in chats %}
@@ -33,5 +17,4 @@
             <p class="error">Войдите для доступа к чатам</p>
         {%endif%}
     </main>
-</body>
-</html>
+{% endblock %}

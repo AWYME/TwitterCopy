@@ -11,10 +11,10 @@ app = Flask(
 	template_folder='templates',  
 	static_folder='static',
 )
-#TODO: add jinja navigation
+
 #TODO: Add user profile
 #TODO: Fix second user profile
-#TODO: For users without chats add label 'У тебя нет чатов лол'
+#TODO: Add label 'У тебя нет чатов лол' fro users without chats 
 #TODO: Исправить положение сообщений в чате (сейчас при обновлении они отображаются сначала)
 #TODO: Fix messages style
 

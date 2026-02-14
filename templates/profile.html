@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Профиль</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %} Чаты {% endblock %}
+
+{% block content %}
     <div class="nav-links">
         <a href="{{url_for('post')}}" class="nav-link">Форум</a>
         {% if session.get('id') %}
@@ -23,5 +19,4 @@
             <a href="{{url_for('chat', email=email)}}">Написать</a>
         {%endif%}
     </div>
-</body>
-</html>
+{% endblock %}
