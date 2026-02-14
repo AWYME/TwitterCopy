@@ -4,7 +4,7 @@ from db.config import get_connection, query_db
 
 
 def getUserById(id):
-    query = "SELECT * FROM client'' WHERE id = (?)"
+    query = "SELECT * FROM client WHERE id = (?)"
     args = (id,)
     cur = get_connection().execute(query, args)
     res = cur.fetchone()

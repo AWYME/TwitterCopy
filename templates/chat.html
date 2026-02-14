@@ -28,15 +28,14 @@
                 <!-- Заголовок чата -->
                 <div class="chat-header">
                     <div class="chat-partner">
-                        <div class="partner-avatar">{{ partnerEmail[0]|upper if partnerEmail else '?' }}</div>
                         <div class="partner-info">
-                            <div class="partner-name">{{ partnerEmail if partnerEmail else 'Выберите собеседника' }}</div>
+                            <div class="partner-name">{{ partnerEmail }}</div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Область сообщений -->
-                <div class="chat-messages">
+                {% if len_chat != 0 %}
+                    <!-- Область сообщений -->
+                    <div class="chat-messages">
                     {% for message in messages %}
                         {% if message.sender_id == session.get('id') %}
                             <!-- Сообщение отправителя -->
@@ -51,7 +50,7 @@
                         {% else %}
                             <!-- Сообщение получателя -->
                             <div class="message received">
-                                <div class="message-avatar">{{ partnerEmail[0]|upper if partnerEmail else '?' }}</div>
+                                {# <div class="message-avatar">{{ partnerEmail[0]|upper if partnerEmail else '?' }}</div> #}
                                 <div class="message-content">
                                     <div class="message-text">{{ message.text }}</div>
                                     <div class="message-meta">
@@ -59,31 +58,30 @@
                                     </div>
                                 </div>
                             </div>
+
                         {% endif %}
-                    {% else %}
-                        <!-- Если нет сообщений -->
-                        <div class="no-messages">
-                            {% if partnerEmail %}
-                                <p>Начните общение с {{ partnerEmail }}</p>
-                            {% else %}
-                                <p>Выберите собеседника для начала общения</p>
-                            {% endif %}
-                        </div>
                     {% endfor %}
-                </div>
+                {% else %}
+                    <!-- Если нет сообщений -->
+                    <div class="no-messages">
+                        {% if partnerEmail %}
+                            <p>Начните общение с {{ partnerEmail }}</p>
+                        {% else %}
+                            <p>Выберите собеседника для начала общения</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
                 
                 <!-- Поле ввода сообщений -->
                 <div class="chat-input">
-                    <form method="POST" action="{{ url_for('send_message', partner_id=partner_id) if partner_id else '#' }}">
+                    <form method="POST" >
                         <div class="input-container">
                             <input type="text" 
                                    name="message" 
                                    placeholder="Введите сообщение..." 
-                                   class="message-input"
-                                   {% if not partnerEmail %}disabled{% endif %}>
-                            <button class="send-btn" 
-                                    type="submit"
-                                    {% if not partnerEmail %}disabled{% endif %}>
+                                   class="message-input">
+                            <button class="send-btn" type="submit">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                     <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="currentColor"/>
                                 </svg>

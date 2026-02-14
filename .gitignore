@@ -1,0 +1,4 @@
+uploads
+db/database.db
+testDb.py
+base.html

@@ -20,21 +20,21 @@
             </div>
         </div>
     </nav>
-
-    <main class="container">
-        <div class="auth-for">
-            <h2 class="form-title">Добавить новый пост</h2>
-            <form id="form-post" method="post" enctype="multipart/form-data">
-                <textarea name="text" id="" placeholder="Сообщение" class="auth-elements"></textarea>
-                <div>
-                    <input type="file" name="file" class="auth-elements">
-                    <input type="submit" class="auth-elements">
-                </div>
-            </form>
-            <p class="form-error">{{error}}</p>
-        </div>
-    </main>
-
+    {% if session.get('id') %}    
+        <main class="container">
+            <div class="auth-for">
+                <h2 class="form-title">Добавить новый пост</h2>
+                <form id="form-post" method="post" enctype="multipart/form-data">
+                    <textarea name="text" id="" placeholder="Сообщение" class="auth-elements"></textarea>
+                    <div>
+                        <input type="file" name="file" class="auth-elements">
+                        <input type="submit" class="auth-elements">
+                    </div>
+                </form>
+                <p class="form-error">{{error}}</p>
+            </div>
+        </main>
+    {% endif %}
     <main class="container">
         {%for p in posts%}
             <div class="post">

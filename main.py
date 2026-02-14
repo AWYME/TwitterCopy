@@ -11,6 +11,13 @@ app = Flask(
 	template_folder='templates',  
 	static_folder='static',
 )
+#TODO: add jinja navigation
+#TODO: Add user profile
+#TODO: Fix second user profile
+#TODO: For users without chats add label 'У тебя нет чатов лол'
+#TODO: Исправить положение сообщений в чате (сейчас при обновлении они отображаются сначала)
+#TODO: Fix messages style
+
 app.permanent_session_lifetime = timedelta(days=3)
 app.secret_key='__AwYmE__'
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -43,32 +50,37 @@ def post():
 
 @app.route('/signUp', methods=["POST", "GET"])
 def signUp():
-    if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
-        userFromDb = getUserByEmail(email)
-        if not userFromDb:
-            createUser(email, password)
-            user=getUserByEmail(email)
-            session['id']=user['id']
-            session['email']=user['email']
-            return redirect(url_for('post'))
-        else:
-            return render_template('signUp.html', error="Такой пользователь уже существует")
-    return render_template('signUp.html')
+    if not session.get('id'):
+        if request.method == "POST":
+            email = request.form["email"]
+            password = request.form["password"]
+            userFromDb = getUserByEmail(email)
+            if not userFromDb:
+                createUser(email, password)
+                user=getUserByEmail(email)
+                session['id']=user['id']
+                session['email']=user['email']
+                return redirect(url_for('post'))
+            else:
+                return render_template('signUp.html', error="Такой пользователь уже существует")
+        return render_template('signUp.html')
+    else: return redirect(url_for('post'))
 
 @app.route('/logIn', methods=['GET','POST'])
 def logIn():
-    if request.method=='POST':
-        email =request.form['email']
-        password =request.form['password']
-        user=getUserByEmail(email)
-        if user['password']==password and user:
-            session['id']=user['id']
-            session['email']=user['email']
-            return redirect(url_for('post'))
-        else: return render_template('logIn.html', error="Неверный пароль")
-    return render_template('logIn.html') 
+    if not session.get('id'):
+        if request.method=='POST':
+            email =request.form['email']
+            password =request.form['password']
+            user=getUserByEmail(email)
+            if user['password']==password and user:
+                session['id']=user['id']
+                session['email']=user['email']
+                return redirect(url_for('post'))
+            else: return render_template('logIn.html', error="Неверный пароль")
+        return render_template('logIn.html')
+    else:
+        return redirect(url_for('post'))
 
 @app.route('/logOut', methods=['GET','POST'])
 def logOut():
@@ -85,18 +97,18 @@ def profile(email):
 def chat(email):
     userId2=getUserByEmail(email)
     chat=getChatBetweenClients(userId2['id'],session.get('id'))
-    massages=getMessagesByChatId(chat['id'])
+    messages=getMessagesByChatId(chat['id'])
     if request.method=='POST':
-        text=request.form['text']
+        text=request.form['message']
         date_time = datetime.now().strftime("%Y/%m/%d, %H:%M:%S")
-        createMessage(text,date_time,chat[id],session.get('id'))
+        createMessage(text,date_time, chat['id'] ,session.get('id'))
         return redirect(url_for('chat',email=email))
-    return render_template('chat.html',id=userId2['id'], massages=massages, partnerEmail=email)
+    return render_template('chat.html',id=userId2['id'], messages=messages, partnerEmail=email, len_chat = len(messages))
 
 @app.route('/chatList',methods=['GET','POST'])
 def chatList():
-    chats=getChatsWithClientById(session.get('id'))
     client_id=session.get('id')
+    chats=getChatsWithClientById(client_id)
     for i in range(len(chats)):
         if chats[i]["first_client_id"] == client_id:
             chats[i].update({"chat_with": getUserById(chats[i]["second_client_id"])["email"]})
