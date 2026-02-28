@@ -18,6 +18,7 @@
                         <a href="{{url_for('logOut')}}" class="nav-link">Выйти</a>
                         <p class="nav-link">{{ session.get('email') }}</p>
                     {% else %}
+                        <a href="{{url_for('signUp')}}" class="nav-link">Зарегестрироваться</a>
                         <a href="{{url_for('logIn')}}" class="nav-link">Войти</a>
                     {% endif %}
                 </div>

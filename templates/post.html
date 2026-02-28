@@ -22,7 +22,7 @@
         {%for p in posts%}
             <div class="post">
                 <div class="post-meta">
-                    <a href="{{url_for('profile', email=p.client_email)}}"><span class="post-author">{{p.client_email}}</span></a>
+                    <a href="{{url_for('profile', username=p.username)}}"><span class="post-author">{{p.username}}</span></a>
                     <span class="post-date">{{p.datetime}}</span>
                 </div>
                 <div class="post-content">

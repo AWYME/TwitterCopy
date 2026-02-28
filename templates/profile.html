@@ -3,14 +3,6 @@
 {% block title %} Чаты {% endblock %}
 
 {% block content %}
-    <div class="nav-links">
-        <a href="{{url_for('post')}}" class="nav-link">Форум</a>
-        {% if session.get('id') %}
-            <a href="{{ url_for('logOut') }}" class="nav-link">Выйти ({{ session.get('email') }})</a>
-        {% else %}
-            <a href="{{ url_for('logIn') }}" class="nav-link">Войти</a>
-        {% endif %}
-    </div>
     <div>
         <h1>Профиль</h1>
         <p>ID: {{id}}</p>

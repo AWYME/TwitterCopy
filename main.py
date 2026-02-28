@@ -6,17 +6,23 @@ from flask import Flask, render_template, request, redirect, url_for, session, s
 from datetime import datetime, timedelta
 import os
 import uuid
+import argon2
+
 app = Flask(  
 	__name__,
 	template_folder='templates',  
 	static_folder='static',
 )
 
+ph = argon2.PasswordHasher(
+    parallelism=1
+)
+
 #TODO: Add user profile
 #TODO: Fix second user profile
-#TODO: Add label 'У тебя нет чатов лол' fro users without chats 
 #TODO: Исправить положение сообщений в чате (сейчас при обновлении они отображаются сначала)
 #TODO: Fix messages style
+#TODO: Fix error with email in line 41, in post
 
 app.permanent_session_lifetime = timedelta(days=3)
 app.secret_key='__AwYmE__'
@@ -33,18 +39,19 @@ def get_file(filename):
 def post():
     posts=getAllPosts()
     for i in range(len(posts)):
-        posts[i].update({"client_email": getUserById(posts[i]["client_id"])["email"]})
+        post = posts[i]
+        post.update({"username": getUserById(post["user_id"])["username"]})
     if request.method == 'POST':
         text=request.form['text']
         file=request.files['file']
         if len(text)==0 and file.filename=='':
-            return render_template('post.html',posts=posts, error='')
+            return render_template('post.html',posts=posts, error='Должно быть заполненно хотя бы одно поле')
         
         client_id=session['id']
         filename = str(uuid.uuid4())
         date_time = datetime.now().strftime("%Y/%m/%d, %H:%M:%S")
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        createPost(text,filename,date_time,client_id)
+        createPost(text,filename,client_id,date_time)
         return redirect(url_for('post'))
     return render_template('post.html',posts=posts)
 
@@ -53,10 +60,12 @@ def signUp():
     if not session.get('id'):
         if request.method == "POST":
             email = request.form["email"]
+            username = request.form['username']
             password = request.form["password"]
+            password_hash = ph.hash(password)
             userFromDb = getUserByEmail(email)
             if not userFromDb:
-                createUser(email, password)
+                createUser(email, username, password_hash)
                 user=getUserByEmail(email)
                 session['id']=user['id']
                 session['email']=user['email']
@@ -72,8 +81,9 @@ def logIn():
         if request.method=='POST':
             email =request.form['email']
             password =request.form['password']
+            password_hash = ph.hash(password)
             user=getUserByEmail(email)
-            if user['password']==password and user:
+            if user['password_hash']==password_hash and user:
                 session['id']=user['id']
                 session['email']=user['email']
                 return redirect(url_for('post'))
@@ -87,15 +97,17 @@ def logOut():
     session.clear()
     return redirect(url_for('post'))
 
-@app.route('/profile/<email>')
-def profile(email):
-    user=getUserByEmail(email)
+@app.route('/profile/<username>')
+def profile(username):
+    user=getUserByUsername(username)
     id=user['id']
-    return render_template('profile.html',id=id,email=email)
+    email=user['email']
+    return render_template('profile.html',id=id,email=email,username=username)
 
 @app.route('/chat/<email>',methods=['GET','POST'])
 def chat(email):
     userId2=getUserByEmail(email)
+    print(f'Second user: {userId2}')
     chat=getChatBetweenClients(userId2['id'],session.get('id'))
     messages=getMessagesByChatId(chat['id'])
     if request.method=='POST':
@@ -111,9 +123,9 @@ def chatList():
     chats=getChatsWithClientById(client_id)
     for i in range(len(chats)):
         if chats[i]["first_client_id"] == client_id:
-            chats[i].update({"chat_with": getUserById(chats[i]["second_client_id"])["email"]})
+            chats[i].update({"chat_with": getUserById(chats[i]["second_client_id"])["username"]})
         elif chats[i]["second_client_id"] == client_id:
-            chats[i].update({"chat_with": getUserById(chats[i]["first_client_id"])["email"]})
+            chats[i].update({"chat_with": getUserById(chats[i]["first_client_id"])["username"]})
     return render_template('chatList.html',chats=chats)
 
 if __name__ == '__main__':

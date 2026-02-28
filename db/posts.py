@@ -2,7 +2,7 @@ from db.config import get_connection
 
 
 def getAllPosts():
-    query = "SELECT * FROM post ORDER BY post.datetime DESC "
+    query = "SELECT * FROM posts ORDER BY posts.datetime DESC "
     connection = get_connection()
     cur = connection.execute(query)
     res = cur.fetchall()
@@ -12,7 +12,7 @@ def getAllPosts():
 
 
 def getPostById(id):
-    query = "SELECT * FROM post WHERE id = ?"
+    query = "SELECT * FROM posts WHERE id = ?"
     args = [id]
     connection = get_connection()
     cur = connection.execute(query, args)
@@ -23,7 +23,7 @@ def getPostById(id):
 
 
 def createPost(text, filename, date_time, client_id):
-    query = "INSERT INTO post (text, filename, datetime, client_id) VALUES (?, ?, ?, ?)"
+    query = "INSERT INTO posts (text, filename, user_id, datetime) VALUES (?, ?, ?, ?)"
     args = [text, filename, date_time, client_id]
     connection = get_connection()
     cur = connection.execute(query, args)
@@ -33,7 +33,7 @@ def createPost(text, filename, date_time, client_id):
 
 
 def deletePostById(id):
-    query = "DELETE FROM post WHERE id = ?"
+    query = "DELETE FROM posts WHERE id = ?"
     args = [id]
     connection = get_connection()
     cur = connection.execute(query, args)
